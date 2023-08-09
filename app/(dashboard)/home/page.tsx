@@ -1,14 +1,19 @@
-import React, {Suspense} from 'react'
-import Greetings from "@/components/Greetings";
-import GreetingsSkeleton from "@/components/GreetingsSkeleton";
+'use client'
 
-export default function page() {
+import { PlaidModal } from '@/components/PlaidModal'
+import React from 'react'
+
+export default async function page() {
   return (
-    <div className='ml-16 p-6 w-full'>
-      <h1>Dashboard</h1>
-      <Suspense fallback={<GreetingsSkeleton />}>
-        <Greetings />
-      </Suspense>
+    <div className="w-full">
+      <PlaidModal
+        title="Connect Bank Account"
+        description="Connect a bank account to get setup with Expensify"
+        isOpen
+        onClose={() => {}}
+      >
+        Children
+      </PlaidModal>
     </div>
   )
 }

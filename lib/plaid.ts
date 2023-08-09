@@ -1,4 +1,3 @@
-
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
 
 const plaidClient = new PlaidApi(
@@ -11,7 +10,7 @@ const plaidClient = new PlaidApi(
         'Plaid-Version': '2020-09-14',
       },
     },
-  })
+  }),
 );
 
 const sessionOptions = {

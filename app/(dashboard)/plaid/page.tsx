@@ -1,14 +1,22 @@
-import { PlaidLink } from "@/components/PlaidLink";
-import { getUserFromCookie } from "@/lib/auth";
-import { cookies } from "next/headers";
+'use client';
+import Greetings from '@/components/Greetings';
+import { Button } from '@/components/ui/button';
 
-export default async function page(){
-  const user = {}
-  
+const refreshTransactions = async () => {
+  const response = await fetch('/api/transactions/sync', {
+    method: 'GET',
+    cache: 'no-store',
+  });
+};
+
+export default function page() {
   return (
-    <div className='ml-16 p-6 w-full'>
-      <h1>Dashboard</h1>
-      <PlaidLink/>
+    <div className="p-6 w-full gap-y-6">
+      <Greetings />
+
+      <Button className="mt-6" onClick={refreshTransactions}>
+        Refresh
+      </Button>
     </div>
-  )
+  );
 }

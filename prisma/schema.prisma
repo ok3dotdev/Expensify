@@ -10,14 +10,57 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String    @id @default(uuid())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  email     String    @unique
-  password  String
-  firstName String?
-  lastName  String?
-  accessCode String?
-  itemId    String?
+model Users {
+  id             Int       @id @default(autoincrement())
+  clerkUserId    String    @unique
+  name           String?
+  accessCode     String    @default("")  // Add the accessCode field with default value ""
+  itemid         String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  transactions   Transactions[]
+  accounts       Accounts[]
+  items          Items[]
+}
+
+model Transactions {
+  id              String     @id
+  userId          String
+  accountId       String?
+  category        String?
+  date            String?
+  authorizedDate  String?
+  name            String?
+  amount          Float?
+  currencyCode    String?
+  isRemoved       Int       @default(0)
+
+  user            Users      @relation(fields: [userId], references: [clerkUserId])
+  account         Accounts?  @relation(fields: [accountId], references: [id])
+}
+
+model Items {
+  id            String       @id
+  accessToken   String
+  userId        String
+  transactionCursor String?
+  bankName      String?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user        Users      @relation(fields: [userId], references: [clerkUserId])
+}
+
+model Accounts {
+  id            String       @id 
+  itemId        String
+  name          String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  userId        String
+  
+  user        Users      @relation(fields: [userId], references: [clerkUserId])
+  transactions Transactions[]
 }

@@ -1,43 +1,28 @@
-import { NextResponse } from "next/server";
-import { jwtVerify } from "jose";
-const PUBLIC_FILE = /\.(.*)$/;
+import { authMiddleware } from '@clerk/nextjs';
+import { NextResponse } from "next/server"
 
-const verifyJWT = async (jwt) => {
-  const { payload } = await jwtVerify(
-    jwt,
-    new TextEncoder().encode(process.env.JWT_SECRET)
-  );
+export default authMiddleware({
+  publicRoutes: [
+    '/api/(.*)',
+  ],
+  async afterAuth(auth, req) {
 
-  return payload;
+    if (auth.isPublicRoute) {
+      //  For public routes, we don't need to do anything
+      return NextResponse.next()
+    }
+    
+    const url = new URL(req.nextUrl.origin)
+
+    if (!auth.userId) {
+      //  If user tries to access a private route without being authenticated,
+      //  redirect them to the sign in page
+      url.pathname = "/sign-in"
+      return NextResponse.redirect(url)
+    }
+  }
+});
+
+export const config = {
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };
-
-
-export default async function middleware(req, res){
-    const { pathname } = req.nextUrl;
-
-    if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/static") ||
-    pathname.startsWith("/signin") ||
-    pathname.startsWith("/register") ||
-    PUBLIC_FILE.test(pathname)
-  ) {
-    return NextResponse.next();
-  }
-
-  const jwt = req.cookies.get(process.env.COOKIE_NAME);
-
-  if (!jwt) {
-    req.nextUrl.pathname = "/signin";
-    return NextResponse.redirect(req.nextUrl);
-  }
-
-  try {
-    await verifyJWT(jwt.value);
-    return NextResponse.next();
-  } catch (e) {
-    req.nextUrl.pathname = "/signin";
-    return NextResponse.redirect(req.nextUrl);
-  }
-}

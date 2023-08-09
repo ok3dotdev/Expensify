@@ -1,25 +1,30 @@
-'use client'
+'use client';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { usePlaidLink } from 'react-plaid-link';
-import Button from '@/components/Button';
+import { Button } from '@/components/ui/button';
 
-export const PlaidLink =()=>{
+export const PlaidLink = () => {
   const [token, setToken] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
-    const createLinkToken = async () => {
-      const response = await fetch('/api/create-link-token', {
-        method: 'POST',
-      });
-      const { link_token } = await response.json();
-      setToken(link_token);
-    };
-    createLinkToken();
+    try {
+      const createLinkToken = async () => {
+        const response = await fetch('/api/create-link-token', {
+          method: 'POST',
+        });
+        const { linkToken } = await response.json();
+        setToken(linkToken);
+      };
+      createLinkToken();
+    } catch (err) {
+      console.log(err);
+    }
   }, []);
 
-  const onSuccess = useCallback(async (publicToken) => {
+  const onSuccess = useCallback(async (publicToken: string) => {
+    console.log('publicToken', publicToken);
     await fetch('/api/exchange-public-token', {
       method: 'POST',
       headers: {
@@ -36,11 +41,10 @@ export const PlaidLink =()=>{
   });
 
   return (
-    <div className='p-6'>
-      <Button onClick={()=> open()} className='bg-gray-900'>
-        <strong>Link account</strong>
+    <div className="p-6">
+      <Button onClick={() => open()} className="bg-gray-900">
+        <strong>Connect Bank</strong>
       </Button>
     </div>
-    
   );
-}
+};

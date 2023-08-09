@@ -1,33 +1,33 @@
-"use client";
-import { register, signin } from "@/lib/api";
-import { useCallback, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import Card from "./Card";
-import Button from "./Button";
-import Input from "./Input";
+'use client';
+import { register, signin } from '@/lib/api';
+import { useCallback, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import Card from './Card';
+import Button from './Button';
+import Input from './Input';
 
 const registerContent = {
-  linkUrl: "/signin",
-  linkText: "Already have an account?",
-  header: "Create a new Account",
-  subheader: "Just a few things to get started",
-  buttonText: "Register",
+  linkUrl: '/signin',
+  linkText: 'Already have an account?',
+  header: 'Create a new Account',
+  subheader: 'Just a few things to get started',
+  buttonText: 'Register',
 };
 
 const signinContent = {
-  linkUrl: "/register",
+  linkUrl: '/register',
   linkText: "Don't have an account?",
-  header: "Welcome Back",
-  subheader: "Enter your credentials to access your account",
-  buttonText: "Sign In",
+  header: 'Welcome Back',
+  subheader: 'Enter your credentials to access your account',
+  buttonText: 'Sign In',
 };
 
-const initial = { email: "", password: "", firstName: "", lastName: "" };
+const initial = { email: '', password: '', firstName: '', lastName: '' };
 
-export default function AuthForm({ mode }: { mode: "register" | "signin" }) {
+export default function AuthForm({ mode }: { mode: 'register' | 'signin' }) {
   const [formState, setFormState] = useState({ ...initial });
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const router = useRouter();
   const handleSubmit = useCallback(
@@ -35,13 +35,13 @@ export default function AuthForm({ mode }: { mode: "register" | "signin" }) {
       e.preventDefault();
 
       try {
-        if (mode === "register") {
+        if (mode === 'register') {
           await register(formState);
         } else {
           await signin(formState);
         }
 
-        router.replace("/home");
+        router.replace('/home');
       } catch (e) {
         setError(`Could not ${mode}`);
       } finally {
@@ -53,10 +53,10 @@ export default function AuthForm({ mode }: { mode: "register" | "signin" }) {
       formState.password,
       formState.firstName,
       formState.lastName,
-    ]
+    ],
   );
 
-  const content = mode === "register" ? registerContent : signinContent;
+  const content = mode === 'register' ? registerContent : signinContent;
 
   return (
     <Card>
@@ -66,7 +66,7 @@ export default function AuthForm({ mode }: { mode: "register" | "signin" }) {
           <p className="tex-lg text-black/25">{content.subheader}</p>
         </div>
         <form onSubmit={handleSubmit} className="py-5 w-full">
-          {mode === "register" && (
+          {mode === 'register' && (
             <div className="flex mb-4 justify-between">
               <div className="pr-2">
                 <div className="text-lg mb-2 ml-2 text-black/50">
