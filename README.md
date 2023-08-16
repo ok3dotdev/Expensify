@@ -15,7 +15,8 @@
 - ReactJS: a popular JavaScript library for building user interfaces
 - Typescript: a typed superset of JavaScript that compiles to plain JavaScript
 - Tailwind CSS: a utility-first CSS framework for rapid UI development
-- HeadlessUI: a lightweight library of accessible and customizable UI components
+- ✨ Shadcn UI - In progress
+-
 
 ## Future Versions
 

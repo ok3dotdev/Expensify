@@ -4,7 +4,6 @@ import { MdOutlineDashboard } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
 import { RiSettings4Line } from 'react-icons/ri';
 import { TbReportAnalytics } from 'react-icons/tb';
-import { signout } from '@/lib/api';
 import { AiOutlineUser, AiOutlineHeart } from 'react-icons/ai';
 import { FiMessageSquare, FiFolder, FiShoppingCart } from 'react-icons/fi';
 import { RxExit } from 'react-icons/rx';
@@ -28,7 +27,7 @@ const SideBar = () => {
     e.preventDefault();
 
     try {
-      await signout();
+      // await signout();
       router.replace('/signin');
     } catch (e) {
       setError('Error signing out');
