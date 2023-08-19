@@ -16,7 +16,6 @@
 - Typescript: a typed superset of JavaScript that compiles to plain JavaScript
 - Tailwind CSS: a utility-first CSS framework for rapid UI development
 - ✨ Shadcn UI - In progress
--
 
 ## Future Versions
 

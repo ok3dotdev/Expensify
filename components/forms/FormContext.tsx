@@ -1,3 +1,4 @@
+import { db } from '@/lib/db';
 import {
   Dispatch,
   ReactNode,
@@ -12,6 +13,7 @@ interface IFormContext {
   setFormData: Dispatch<SetStateAction<any>>;
   onHandleBack: () => void;
   onHandleNext: () => void;
+  addUserToDB: (username: string) => Promise<any>;
   step: number;
 }
 
@@ -20,6 +22,7 @@ const FormContext = createContext<IFormContext>({
   onHandleBack: () => {},
   onHandleNext: () => {},
   setFormData: () => {},
+  addUserToDB: () => Promise.resolve(),
   step: 0,
 });
 
@@ -39,9 +42,31 @@ export function FormProvider({ children }: IProps) {
     setStep((prev) => prev - 1);
   }
 
+  async function addUserToDB(username) {
+    try {
+      const user = await fetch('/api/user', {
+        method: 'POST',
+        body: JSON.stringify({
+          username,
+        }),
+      });
+      return user;
+    } catch (error) {
+      console.error('Error adding user to database:', error);
+      throw error;
+    }
+  }
+
   return (
     <FormContext.Provider
-      value={{ formData, setFormData, onHandleBack, onHandleNext, step }}
+      value={{
+        formData,
+        addUserToDB,
+        setFormData,
+        onHandleBack,
+        onHandleNext,
+        step,
+      }}
     >
       {children}
     </FormContext.Provider>

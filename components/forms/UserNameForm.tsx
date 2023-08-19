@@ -1,3 +1,4 @@
+// `import { addUser } from '@/lib/db';
 import { useForm } from 'react-hook-form';
 import { useFormState } from './FormContext';
 
@@ -6,13 +7,17 @@ type TFormValues = {
 };
 
 export function UserNameForm() {
-  const { onHandleNext, setFormData, formData } = useFormState();
+  const { onHandleNext, setFormData, formData, addUserToDB } = useFormState();
   const { register, handleSubmit } = useForm<TFormValues>({
     defaultValues: formData,
   });
 
-  const onHandleFormSubmit = (data: TFormValues) => {
+  const onHandleFormSubmit = async (data: TFormValues) => {
     setFormData((prev: any) => ({ ...prev, ...data }));
+    console.log(data);
+    try {
+      await addUserToDB(data.username);
+    } catch (error) {}
     onHandleNext();
   };
 
