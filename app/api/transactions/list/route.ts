@@ -14,12 +14,17 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const transactions = await getTransactionsForUserInDateRange(
+    // const transactions = await getTransactionsForUserInDateRange(
+    //   userId,
+    //   to,
+    //   from,
+    // );
+    const transactions = await getTransactionsForUser(
       userId,
+      maxCount,
       to,
       from,
     );
-    // const transactions = await getTransactionsForUser(userId, maxCount);
 
     if (!transactions) {
       return NextResponse.json({
@@ -28,18 +33,30 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    return NextResponse.json({ ok: true, transactions });
+    return NextResponse.json({ transactions });
   } catch (error) {
     console.log(error);
     console.error('Error getting transactions list');
   }
 }
 
-const getTransactionsForUser = async (userId: string, maxCount: number) => {
+const getTransactionsForUser = async (
+  userId: string,
+  maxCount: number,
+  to: string,
+  from: string,
+) => {
   try {
     return await db.transactions.findMany({
       where: {
         userId,
+        ...(to &&
+          from && {
+            date: {
+              lte: to, // Greater than or equal to start date
+              gte: from, // Less than or equal to end date
+            },
+          }),
       },
       take: maxCount,
     });
