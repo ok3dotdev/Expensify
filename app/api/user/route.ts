@@ -41,6 +41,9 @@ export async function GET(req: NextRequest) {
     where: {
       clerkUserId: userId,
     },
+    select: {
+      name: true,
+    },
   });
 
   return NextResponse.json(user);

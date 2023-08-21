@@ -38,8 +38,8 @@ export function NewCard({ className, ...props }: any) {
           </tr>
         </thead>
         <tbody>
-          {transactions.map((transaction) => (
-            <tr>
+          {transactions.map((transaction, idx) => (
+            <tr key={idx}>
               <td className="border px-4 py-2">{transaction.name}</td>
               <td className="border px-4 py-2">${transaction.amount}</td>
               <td className="border px-4 py-2">{transaction.date}</td>

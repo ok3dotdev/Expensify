@@ -6,9 +6,11 @@ const RootLayout = ({ children }: any) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <body className="h-screen w-screen flex relative">
-          <SideBar />
-          {children}
+        <body>
+          <div className="h-screen w-screen flex relative">
+            <SideBar />
+            {children}
+          </div>
         </body>
       </head>
     </html>
