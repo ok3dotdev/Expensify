@@ -1,3 +1,4 @@
+'use client';
 import React, { useCallback, useState } from 'react';
 import { HiMenuAlt3 } from 'react-icons/hi';
 import { MdOutlineDashboard } from 'react-icons/md';
@@ -14,8 +15,16 @@ const SideBar = () => {
   const [error, setError] = useState('');
   const menus = {
     top: [
-      { name: 'dashboard', link: '/home', icon: MdOutlineDashboard },
-      { name: 'analytics', link: '/', icon: TbReportAnalytics },
+      {
+        name: 'Summary',
+        link: '/dashboard',
+        icon: MdOutlineDashboard,
+      },
+      {
+        name: 'Expenses',
+        link: '/dashboard/expense',
+        icon: TbReportAnalytics,
+      },
       { name: 'messages', link: '/', icon: FiMessageSquare },
     ],
     bottom: [{ name: 'profile', link: '/profile', icon: AiOutlineUser }],

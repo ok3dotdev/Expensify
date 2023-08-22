@@ -18,8 +18,6 @@ const Greetings = () => {
     return <div>Loading...</div>;
   }
 
-  console.log('userdata', userData);
-
   return (
     <Card className="w-full py-2 relative">
       <div className="flex justify-between">
@@ -27,7 +25,7 @@ const Greetings = () => {
           Welcome {userData.name}👋🏾
         </h1>
         <div suppressHydrationWarning>
-          {/* <UserButton afterSignOutUrl="/" /> */}
+          <UserButton afterSignOutUrl="/" />
         </div>
       </div>
     </Card>

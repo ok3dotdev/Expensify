@@ -3,7 +3,7 @@ import useSWR from 'swr';
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-export function useTransactions(to: string, from: string) {
+export function useTransactions(to?: string, from?: string) {
   // console.log(to, from);
   //Transaction Data
   const endpoint = `api/transactions/list${
