@@ -21,14 +21,17 @@ const Greetings = () => {
   console.log('userdata', userData);
 
   return (
-    <Card className="w-full py-2 relative">
-      <div className="flex justify-between">
-        <h1 className="text-3xl text-gray-700 font-bold mb-4">
+    <Card className="w-full py-2 relative mx-auto mb-3 px-4">
+      <div className="flex justify-between px-2 items-center">
+
+        <h1 className="text-3xl text-gray-700 font-bold">
           Welcome {userData.name}👋🏾
         </h1>
+
         <div suppressHydrationWarning>
-          {/* <UserButton afterSignOutUrl="/" /> */}
+          <UserButton afterSignOutUrl="/" />
         </div>
+
       </div>
     </Card>
   );

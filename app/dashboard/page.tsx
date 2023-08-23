@@ -12,8 +12,8 @@ const syncTransactions = async () => {
 
 export default function page() {
   return (
-    <div className="p-6 w-full gap-y-6 ml-12" suppressHydrationWarning>
-      <Greetings />
+    <div className="p-6 w-full gap-y-6 ml-12 bg-black text-white" suppressHydrationWarning>
+      <Greetings/>
       <Summary />
       <NewCard />
     </div>
