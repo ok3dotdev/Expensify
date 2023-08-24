@@ -1,20 +1,21 @@
-'use client';
-import SideBar from '@/components/SideBar';
-import React from 'react';
+import '../styles/global.css';
+import { Inter } from 'next/font/google';
 
-const RootLayout = ({ children }: any) => {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <body className="bg-black w-full flex  h-screen mx-auto">
-          <div className="w-screen flex relative mx-auto">
-            <SideBar />
-            {children}
-          </div>
-        </body>
-      </head>
-    </html>
-  );
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata = {
+  title: 'Expensify app',
+  description: 'Devedloped by ok3',
 };
 
-export default RootLayout;
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body className={`${inter.className}`}>{children}</body>
+    </html>
+  );
+}

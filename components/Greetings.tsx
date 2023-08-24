@@ -18,8 +18,6 @@ const Greetings = () => {
     return <div>Loading...</div>;
   }
 
-  console.log('userdata', userData);
-
   return (
     <Card className="w-full py-2 relative mx-auto mb-3 px-4">
       <div className="flex justify-between px-2 items-center">

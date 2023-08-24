@@ -13,6 +13,7 @@ interface Transaction {
 
 export function Table() {
   const { transactionData, error, isLoading } = useTransactions();
+  const { transactions } = transactionData;
 
   return (
     <div className="mt-4">
