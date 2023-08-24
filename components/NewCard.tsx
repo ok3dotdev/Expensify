@@ -29,8 +29,8 @@ export function NewCard({ className, ...props }: any) {
   const transactions = transactionData.transactions.slice(0, 7);
   //loading
   return (
-    <div className="px-8 mt-5 grid grid-cols">
-      <div>
+    <div className="px-8 mt-5 grid grid-col justify-items-center md:grid-flow-col gap-4 md:grid-cols-2 h-[100vh] bg-black ">
+      <div className="">
         <PieChart
           data={[
             { title: 'One', value: 10, color: '#E38627' },
@@ -38,26 +38,28 @@ export function NewCard({ className, ...props }: any) {
             { title: 'Three', value: 20, color: '#6A2135' },
           ]}
         />
-        ;
+        
       </div>
-      <table className="table-auto rounded-md">
-        <thead className="border rounded">
-          <tr className="border">
-            <th className="px-4 py-2 border">Amount</th>
-            <th className="px-4 py-2 border">Date</th>
-            <th className="px-4 py-2 border">Merchant</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((transaction, idx) => (
-            <tr key={idx}>
-              <td className="border px-4 py-2">{transaction.name}</td>
-              <td className="border px-4 py-2">${transaction.amount}</td>
-              <td className="border px-4 py-2">{transaction.date}</td>
+      <div className="">
+        <table className="table-auto rounded-md">
+          <thead className="border rounded ">
+            <tr className="border">
+              <th className="px-4 py-2 border">Merchant</th>
+              <th className="px-4 py-2 border">Amount</th>
+              <th className="px-4 py-2 border">Date</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {transactions.map((transaction, idx) => (
+              <tr key={idx} className="">
+                <td className="border px-4 py-2">{transaction.name}</td>
+                <td className="border px-4 py-2">${transaction.amount}</td>
+                <td className="border px-4 py-2">{transaction.date}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
