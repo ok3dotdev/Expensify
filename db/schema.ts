@@ -7,7 +7,7 @@ export const connectedBanks = pgTable('connected_banks', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull(),
   accessToken: text('access_token').notNull(),
-  bankName: text('bank_name'),
+  name: text('name'),
 });
 
 export const connectedBanksRelations = relations(

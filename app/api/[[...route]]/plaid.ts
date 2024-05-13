@@ -139,6 +139,7 @@ const app = new Hono()
         const itemResponse = await client.itemGet({
           access_token: exchange.data.access_token,
         });
+
         const institutionId = itemResponse.data.item.institution_id;
 
         // Fetch institution information by ID
@@ -153,7 +154,7 @@ const app = new Hono()
             id: createId(),
             userId: auth.userId,
             accessToken: exchange.data.access_token,
-            bankName: instResponse.data.institution.name,
+            name: instResponse.data.institution.name,
           })
           .returning();
 

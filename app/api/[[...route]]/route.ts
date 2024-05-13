@@ -2,11 +2,12 @@ import { Hono } from 'hono';
 import { handle } from 'hono/vercel';
 import { HTTPException } from 'hono/http-exception';
 
-import accounts from './accounts';
-import transactions from './transactions';
-import categories from './categories';
-import summary from './summary';
 import plaid from './plaid';
+import banks from './banks';
+import summary from './summary';
+import accounts from './accounts';
+import categories from './categories';
+import transactions from './transactions';
 import subscriptions from './subscriptions';
 
 export const runtime = 'nodejs';
@@ -18,11 +19,13 @@ app.onError((err, c) => {
     return err.getResponse();
   }
 
+  console.log('error', err);
   return c.json({ error: 'Internal server error' }, 500);
 });
 
 const routes = app
   .route('/plaid', plaid)
+  .route('/banks', banks)
   .route('/summary', summary)
   .route('/accounts', accounts)
   .route('/categories', categories)
