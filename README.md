@@ -1,6 +1,18 @@
-## New feature
+## Multiple banks feature for Expensify
 
-Ability to add mulitiple bank accounts
+Allow users add multiple banks and track the
+
+## steps
+
+#
+
+create a new branch (multi-banks) for development
+create a new db (multi-banks) on neon
+run npm run db:generate
+run npm run db:migrate to apply changes to the new db
+change schema and added one to many relationship betweeen bank and accounts
+on delete bank accounts with matching ids are deleted "cascade"
+added bank_id to
 
 # schema
 

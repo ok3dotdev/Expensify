@@ -38,10 +38,10 @@ export const PlaidConnect = () => {
   });
 
   const onClick = () => {
-    if (shouldBlock) {
-      triggerPaywall();
-      return;
-    }
+    // if (shouldBlock) {
+    //   triggerPaywall();
+    //   return;
+    // }
 
     if (plaid.ready) {
       plaid.open();
