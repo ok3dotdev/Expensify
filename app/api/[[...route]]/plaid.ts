@@ -158,7 +158,7 @@ const app = new Hono()
             name: account.name,
             plaidId: account.account_id,
             userId: auth.userId,
-            accessToken: connectedBank.access_token,
+            accessToken: connectedBank.accessToken,
           }))
         )
         .returning();
