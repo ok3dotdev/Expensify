@@ -1,0 +1,40 @@
+name: Exapensify CI
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  cache-and-install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+
+      - name: Get npm cache directory
+        id: npm-cache
+        run: echo "npm cache dir" > $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup npm cache
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-cache-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run build --if-present
+
+      # Uncomment the following lines to run tests
+      # - name: Run tests
+      #   run: npm test

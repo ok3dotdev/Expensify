@@ -2,6 +2,8 @@
 
 This documentation provides instructions on adding multiple banks and tracking transactions in Expensify.
 
+![Example Image](images/screenshot.png)
+
 ## Steps
 
 1. **Create a New Branch for Development**
