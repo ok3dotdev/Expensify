@@ -50,7 +50,7 @@ export const SettingsCard = () => {
             </div>
             <div>
               <PlaidConnect />
-              {connectedBank && <PlaidDisconnect />}
+              {/* {connectedBank && <PlaidDisconnect />} */}
             </div>
           </div>
         </div>

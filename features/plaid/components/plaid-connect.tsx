@@ -38,7 +38,7 @@ export const PlaidConnect = () => {
         publicToken,
       });
     },
-    env: 'development',
+    env: 'sandbox',
   });
 
   const onClick = () => {
