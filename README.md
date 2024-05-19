@@ -1,58 +1,68 @@
-## Multiple banks feature for Expensify
+# Expensify Multiple Banks Feature Documentation
 
-Allow users add multiple banks and track Transactions
+This documentation provides instructions on adding multiple banks and tracking transactions in Expensify.
 
-## steps
+## Steps
 
-create a new branch (multi-banks) for development
+1. **Create a New Branch for Development**
+   - Create a branch named `multi-banks`.
 
-create a new db (multi-banks) on neon with Drizzle ORM
-run npm run db:generate
-run npm run db:migrate to apply changes to the new db
+2. **Set Up the Database**
+   - Create a new database named `multi-banks` on Neon using Drizzle ORM.
+   - Run `npm run db:generate`.
+   - Run `npm run db:migrate` to apply changes to the new database.
 
-change schema and added one to many relationship betweeen bank and accounts
+3. **Schema Changes**
+   - Modify the schema to establish a one-to-many relationship between banks and accounts.
 
-on connect bank add bank and other values to the db
+4. **Connecting a Bank**
+   - When a bank is connected, add the bank and other relevant values to the database.
 
-add new routes for banks to routes.ts with hono.js
-allow get all banks
-allow get banks by id
-allow delete all banks
-allow delete single bank with account and transactions
+5. **Add New Routes for Banks**
+   - Update `routes.ts` with Hono.js to include the following routes:
+     - Get all banks
+     - Get bank by ID
+     - Delete all banks
+     - Delete a single bank along with its accounts and transactions
 
-create a 'use client' page for banks under app (dashboard)
-fetch banks data with hono using a hook
+6. **Create a Client Page for Banks**
+   - Under the `app/dashboard` directory, create a 'use client' page for banks.
+   - Use a hook to fetch banks data with Hono.
 
-# Connect Bank Flow
+## Connect Bank Flow
 
-user clicks connect bank or add new bank ->
-user selects bank and accounts and gets access_tokens ->
-server adds new bank details into the DB ->
-server fetches accounts, categories, and transactions for user selection and saves to db
+1. User clicks "Connect Bank" or "Add New Bank".
+2. User selects a bank and accounts, then obtains access tokens.
+3. Server adds new bank details to the database.
+4. Server fetches accounts, categories, and transactions for user selection and saves them to the database.
 
-## HOW TO START APP
+## How to Start the App
 
-- create .env.local and fill these details
-  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-  CLERK_PUBLISHABLE_KEY
-  CLERK_SECRET_KEY
-  NEXT_PUBLIC_CLERK_SIGN_IN_URL
-  NEXT_PUBLIC_CLERK_SIGN_UP_URL
-  DATABASE_URL
-  NEXT_PUBLIC_APP_URL
-  PLAID_CLIENT_TOKEN
-  PLAID_SECRET_TOKEN
-  LEMONSQUEEZY_STORE_ID
-  LEMONSQUEEZY_PRODUCT_ID
-  LEMONSQUEEZY_API_KEY
-  LEMONSQUEEZY_WEBHOOK_SECRET
+1. **Create `.env.local` File**
+   - Populate it with the following details:
+     ```
+     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+     CLERK_PUBLISHABLE_KEY=
+     CLERK_SECRET_KEY=
+     NEXT_PUBLIC_CLERK_SIGN_IN_URL=
+     NEXT_PUBLIC_CLERK_SIGN_UP_URL=
+     DATABASE_URL=
+     NEXT_PUBLIC_APP_URL=
+     PLAID_CLIENT_TOKEN=
+     PLAID_SECRET_TOKEN=
+     LEMONSQUEEZY_STORE_ID=
+     LEMONSQUEEZY_PRODUCT_ID=
+     LEMONSQUEEZY_API_KEY=
+     LEMONSQUEEZY_WEBHOOK_SECRET=
+     ```
 
-- Run db scripts
-  npm run db:generate
-  npm run db:migrate
-  npm run db:studio
+2. **Run Database Scripts**
+   - Run `npm run db:generate`.
+   - Run `npm run db:migrate`.
+   - Run `npm run db:studio`.
 
-- Run the app
-  npm run dev
+3. **Run the App**
+   - Execute `npm run dev`.
 
-- visit localhost:3000
+4. **Access the App**
+   - Open your browser and visit `localhost:3000`.
