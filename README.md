@@ -1,4 +1,4 @@
-# Expensify Multiple Banks Feature Documentation
+# Expensify Multiple Banks
 
 This documentation provides instructions on adding multiple banks and tracking transactions in Expensify.
 
