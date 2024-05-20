@@ -1,8 +1,8 @@
-name: Exapensify CI
+name: Expensify CI
 
 on:
-  - push
-  - pull_request
+  push:
+  pull_request:
 
 jobs:
   cache-and-install:
@@ -27,6 +27,22 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Set up environment variables
+        run: |
+          echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}" >> $GITHUB_ENV
+          echo "CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }}" >> $GITHUB_ENV
+          echo "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_CLERK_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_CLERK_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }}" >> $GITHUB_ENV
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}" >> $GITHUB_ENV
+          echo "PLAID_CLIENT_TOKEN=${{ secrets.PLAID_CLIENT_TOKEN }}" >> $GITHUB_ENV
+          echo "PLAID_SECRET_TOKEN=${{ secrets.PLAID_SECRET_TOKEN }}" >> $GITHUB_ENV
+          echo "LEMONSQUEEZY_STORE_ID=${{ secrets.LEMONSQUEEZY_STORE_ID }}" >> $GITHUB_ENV
+          echo "LEMONSQUEEZY_PRODUCT_ID=${{ secrets.LEMONSQUEEZY_PRODUCT_ID }}" >> $GITHUB_ENV
+          echo "LEMONSQUEEZY_API_KEY=${{ secrets.LEMONSQUEEZY_API_KEY }}" >> $GITHUB_ENV
+          echo "LEMONSQUEEZY_WEBHOOK_SECRET=${{ secrets.LEMONSQUEEZY_WEBHOOK_SECRET }}" >> $GITHUB_ENV
 
       - name: Build the project
         run: npm run build --if-present
