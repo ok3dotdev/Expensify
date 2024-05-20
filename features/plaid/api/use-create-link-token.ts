@@ -1,25 +1,30 @@
-import { toast } from "sonner";
-import { InferResponseType } from "hono";
-import { useMutation } from "@tanstack/react-query";
+import { toast } from 'sonner';
+import { InferResponseType } from 'hono';
+import { useMutation } from '@tanstack/react-query';
 
-import { client } from "@/lib/hono";
+import { client } from '@/lib/hono';
 
-type ResponseType = InferResponseType<typeof client.api.plaid["create-link-token"]["$post"]>;
+type ResponseType = InferResponseType<
+  (typeof client.api.plaid)['create-link-token']['$post'],
+  200
+>;
 
 export const useCreateLinkToken = () => {
-  const mutation = useMutation<
-    ResponseType,
-    Error
-  >({
+  const mutation = useMutation<ResponseType, Error>({
     mutationFn: async () => {
-      const response = await client.api.plaid["create-link-token"].$post();
+      const response = await client.api.plaid['create-link-token'].$post();
+
+      if (!response.ok) {
+        throw Error('Failed to create link token');
+      }
+
       return await response.json();
     },
     onSuccess: () => {
-      toast.success("Link token created");
+      toast.success('Link token created');
     },
     onError: () => {
-      toast.error("Failed to create link token");
+      toast.error('Failed to create link token');
     },
   });
 

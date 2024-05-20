@@ -42,16 +42,12 @@ const app = new Hono()
       throw new HTTPException(401);
     }
 
-    const [data] = await db
+    const [connectedBank] = await db
       .select()
       .from(connectedBanks)
       .where(eq(connectedBanks.userId, auth.userId));
 
-    if (!data) {
-      return c.json({ data: null });
-    }
-
-    return c.json({ data });
+    return c.json({ data: connectedBank || null });
   })
   .delete('/connected-bank', clerkMiddleware(), async (c) => {
     const auth = getAuth(c);
@@ -88,29 +84,25 @@ const app = new Hono()
     return c.json({ data });
   })
   .post('/create-link-token', clerkMiddleware(), async (c) => {
-    try {
-      const auth = getAuth(c);
+    const auth = getAuth(c);
 
-      if (!auth?.userId) {
-        throw new HTTPException(401, {
-          res: c.json({ error: 'Unauthorized' }, 401),
-        });
-      }
-
-      const token = await client.linkTokenCreate({
-        user: {
-          client_user_id: auth.userId,
-        },
-        client_name: 'finance-dev',
-        products: [Products.Transactions, Products.Auth],
-        country_codes: [CountryCode.Us],
-        language: 'en',
+    if (!auth?.userId) {
+      throw new HTTPException(401, {
+        res: c.json({ error: 'Unauthorized' }, 401),
       });
-
-      return c.json({ data: token.data });
-    } catch (error) {
-      console.error(error);
     }
+
+    const token = await client.linkTokenCreate({
+      user: {
+        client_user_id: auth.userId,
+      },
+      client_name: 'expensify',
+      products: [Products.Transactions],
+      country_codes: [CountryCode.Us],
+      language: 'en',
+    });
+
+    return c.json({ data: token.data.link_token }, 200);
   })
   .post(
     '/exchange-public-token',
@@ -122,117 +114,111 @@ const app = new Hono()
       })
     ),
     async (c) => {
-      try {
-        const auth = getAuth(c);
-        const { publicToken } = c.req.valid('json');
+      const auth = getAuth(c);
+      const { publicToken } = c.req.valid('json');
 
-        if (!auth?.userId) {
-          throw new HTTPException(401, {
-            res: c.json({ error: 'Unauthorized' }, 401),
-          });
-        }
-
-        const exchange = await client.itemPublicTokenExchange({
-          public_token: publicToken,
+      if (!auth?.userId) {
+        throw new HTTPException(401, {
+          res: c.json({ error: 'Unauthorized' }, 401),
         });
-
-        const itemResponse = await client.itemGet({
-          access_token: exchange.data.access_token,
-        });
-
-        const institutionId = itemResponse.data.item.institution_id;
-
-        // Fetch institution information by ID
-        const instResponse = await client.institutionsGetById({
-          institution_id: institutionId,
-          country_codes: ['US'],
-        });
-
-        const [connectedBank] = await db
-          .insert(connectedBanks)
-          .values({
-            id: createId(),
-            userId: auth.userId,
-            accessToken: exchange.data.access_token,
-            name: instResponse.data.institution.name,
-          })
-          .returning();
-
-        const plaidTransactions = await client.transactionsSync({
-          access_token: connectedBank.accessToken,
-        });
-
-        const plaidAccounts = await client.accountsGet({
-          access_token: connectedBank.accessToken,
-        });
-
-        const plaidCategories = await client.categoriesGet({});
-
-        const newAccounts = await db
-          .insert(accounts)
-          .values(
-            plaidAccounts.data.accounts.map((account) => ({
-              id: createId(),
-              name: account.name,
-              plaidId: account.account_id,
-              userId: auth.userId,
-              bankId: connectedBank.id,
-              accessToken: connectedBank.access_token,
-            }))
-          )
-          .returning();
-
-        const newCategories = await db
-          .insert(categories)
-          .values(
-            plaidCategories.data.categories.map((category) => ({
-              id: createId(),
-              name: category.hierarchy.join(', '),
-              userId: auth.userId,
-              plaidId: category.category_id,
-            }))
-          )
-          .returning();
-
-        const newTransactionsValues = plaidTransactions.data.added.reduce(
-          (acc, transaction) => {
-            const account = newAccounts.find(
-              (account) => account.plaidId === transaction.account_id
-            );
-            const category = newCategories.find(
-              (category) => category.plaidId === transaction.category_id
-            );
-            const amountInMiliunits = convertAmountToMiliunits(
-              transaction.amount
-            );
-
-            if (account) {
-              acc.push({
-                id: createId(),
-                amount: amountInMiliunits,
-                payee: transaction.merchant_name || transaction.name,
-                notes: transaction.name,
-                date: new Date(transaction.date),
-                accountId: account.id,
-                categoryId: category?.id,
-              });
-            }
-
-            return acc;
-          },
-          [] as (typeof transactions.$inferInsert)[]
-        );
-
-        if (newTransactionsValues.length > 0) {
-          await db.insert(transactions).values(newTransactionsValues);
-        }
-
-        return c.json({ ok: true });
-      } catch (error: any) {
-        const err = error.response.data;
-        c.json({ error: error }, 401);
-        console.log('error', err, error);
       }
+
+      const exchange = await client.itemPublicTokenExchange({
+        public_token: publicToken,
+      });
+
+      const itemResponse = await client.itemGet({
+        access_token: exchange.data.access_token,
+      });
+
+      const institutionId = itemResponse?.data?.item?.institution_id || '';
+
+      // Fetch institution information by ID
+      const instResponse = await client.institutionsGetById({
+        institution_id: institutionId,
+        country_codes: [CountryCode.Us],
+      });
+
+      const [connectedBank] = await db
+        .insert(connectedBanks)
+        .values({
+          id: createId(),
+          userId: auth.userId,
+          accessToken: exchange.data.access_token,
+          name: instResponse.data.institution.name,
+        })
+        .returning();
+
+      const plaidTransactions = await client.transactionsSync({
+        access_token: connectedBank.accessToken,
+      });
+
+      const plaidAccounts = await client.accountsGet({
+        access_token: connectedBank.accessToken,
+      });
+
+      const plaidCategories = await client.categoriesGet({});
+
+      const newAccounts = await db
+        .insert(accounts)
+        .values(
+          plaidAccounts.data.accounts.map((account) => ({
+            id: createId(),
+            name: account.name,
+            plaidId: account.account_id,
+            userId: auth.userId,
+            bankId: connectedBank.id,
+            accessToken: connectedBank.accessToken,
+          }))
+        )
+        .returning();
+
+      const newCategories = await db
+        .insert(categories)
+        .values(
+          plaidCategories.data.categories.map((category) => ({
+            id: createId(),
+            name: category.hierarchy.join(', '),
+            userId: auth.userId,
+            plaidId: category.category_id,
+          }))
+        )
+        .returning();
+
+      const newTransactionsValues = plaidTransactions.data.added.reduce(
+        (acc, transaction) => {
+          const account = newAccounts.find(
+            (account) => account.plaidId === transaction.account_id
+          );
+          const category = newCategories.find(
+            (category) => category.plaidId === transaction.category_id
+          );
+          const amountInMiliunits = convertAmountToMiliunits(
+            transaction.amount
+          );
+
+          if (account) {
+            acc.push({
+              id: createId(),
+              amount: amountInMiliunits,
+              payee: transaction.merchant_name || transaction.name,
+              notes: transaction.name,
+              date: new Date(transaction.date),
+              accountId: account.id,
+              categoryId: category?.id,
+            });
+          }
+
+          return acc;
+        },
+        [] as (typeof transactions.$inferInsert)[]
+      );
+
+      if (newTransactionsValues.length > 0) {
+        await db.insert(transactions).values(newTransactionsValues);
+      }
+
+      return c.json({ ok: true }, 200);
     }
   );
 

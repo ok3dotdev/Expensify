@@ -6,8 +6,8 @@ export const useGetBanks = (id?: string) => {
   const query = useQuery({
     queryKey: ['banks', { id }],
     queryFn: async () => {
-      const response = client.api.banks[':id'].$get({
-        param: id,
+      const response = await client.api.banks[':id'].$get({
+        param: { id },
       });
 
       if (!response.ok) {
