@@ -1,4 +1,4 @@
-name: Deploy Next.js application
+name: Expensify Deploy
 
 on:
   push:
