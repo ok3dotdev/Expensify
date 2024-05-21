@@ -33,12 +33,6 @@ jobs:
           echo "LEMONSQUEEZY_PRODUCT_ID=${{ secrets.LEMONSQUEEZY_PRODUCT_ID }}" >> .env
           echo "LEMONSQUEEZY_API_KEY=${{ secrets.LEMONSQUEEZY_API_KEY }}" >> .env
           echo "LEMONSQUEEZY_WEBHOOK_SECRET=${{ secrets.LEMONSQUEEZY_WEBHOOK_SECRET }}" >> .env
-      - name: Build docker image
-        run: docker build -t expensify .
-      - name: Generate database
-        run: npm run db:generate
-      - name: Migrate database
-        run: npm run db:migrate
 
   deploy:
     needs: build
