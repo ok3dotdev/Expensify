@@ -1,0 +1,1 @@
+ALTER TABLE "connected_banks" RENAME COLUMN "bank_name" TO "name";

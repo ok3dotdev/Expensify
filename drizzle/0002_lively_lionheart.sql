@@ -1,0 +1,1 @@
+ALTER TABLE "connected_banks" ADD COLUMN "bank_name" text;
