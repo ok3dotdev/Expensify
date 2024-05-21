@@ -167,10 +167,7 @@ const app = new Hono()
             name: account.name,
             plaidId: account.account_id,
             userId: auth.userId,
-<<<<<<< HEAD
-=======
             bankId: connectedBank.id,
->>>>>>> multiple-banks-branch
             accessToken: connectedBank.accessToken,
           }))
         )
