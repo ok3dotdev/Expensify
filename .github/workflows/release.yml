@@ -32,24 +32,13 @@ jobs:
         with:
           node-version: 20.x
 
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        with:
-          version: 7
-          run_install: false
-
-      - name: Get npm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(npm store path --silent)" >> $GITHUB_ENV
-
       - uses: actions/cache@v3
         name: Setup npm cache
         with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-npm-store-${{ hashFiles('**/npm-lock.yaml') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-store-
+            ${{ runner.os }}-npm-cache-
 
       - name: Add SST and install dependencies
         run: npm install
