@@ -56,4 +56,4 @@ jobs:
           echo "LEMONSQUEEZY_WEBHOOK_SECRET=${{ secrets.LEMONSQUEEZY_WEBHOOK_SECRET }}" >> $GITHUB_ENV
 
       - name: Deploy application to aws
-        run: npm run sst:deploy --stage=production
+        run: npm run sst:deploy -- --stage=production --yes
