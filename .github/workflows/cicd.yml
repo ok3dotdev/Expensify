@@ -2,7 +2,7 @@ name: Expensify Deploy
 
 on:
   push:
-    branches: ['docker-branch']
+    branches: ['main']
 
 jobs:
   build:

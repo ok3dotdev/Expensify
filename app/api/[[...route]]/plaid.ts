@@ -123,14 +123,17 @@ const app = new Hono()
         });
       }
 
+      // exchange public token for accessToken
       const exchange = await client.itemPublicTokenExchange({
         public_token: publicToken,
       });
 
+      //Get the Item/Bank/cc Information for the connected bank using accessToken
       const itemResponse = await client.itemGet({
         access_token: exchange.data.access_token,
       });
 
+      //instituio ID for the Item/Bank from Item response
       const institutionId = itemResponse?.data?.item?.institution_id || '';
 
       // Fetch institution information by ID
@@ -139,6 +142,7 @@ const app = new Hono()
         country_codes: [CountryCode.Us],
       });
 
+      //store bank details into the DB
       const [connectedBank] = await db
         .insert(connectedBanks)
         .values({
