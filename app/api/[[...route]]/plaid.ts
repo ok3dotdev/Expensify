@@ -42,16 +42,12 @@ const app = new Hono()
       throw new HTTPException(401);
     }
 
-    const [data] = await db
+    const [connectedBank] = await db
       .select()
       .from(connectedBanks)
       .where(eq(connectedBanks.userId, auth.userId));
 
-    if (!data) {
-      return c.json({ data: null });
-    }
-
-    return c.json({ data });
+    return c.json({ data: connectedBank || null });
   })
   .delete('/connected-bank', clerkMiddleware(), async (c) => {
     const auth = getAuth(c);
@@ -100,13 +96,13 @@ const app = new Hono()
       user: {
         client_user_id: auth.userId,
       },
-      client_name: 'finance-dev',
+      client_name: 'expensify',
       products: [Products.Transactions],
       country_codes: [CountryCode.Us],
       language: 'en',
     });
 
-    return c.json({ data: token.data });
+    return c.json({ data: token.data.link_token }, 200);
   })
   .post(
     '/exchange-public-token',
@@ -127,16 +123,33 @@ const app = new Hono()
         });
       }
 
+      // exchange public token for accessToken
       const exchange = await client.itemPublicTokenExchange({
         public_token: publicToken,
       });
 
+      //Get the Item/Bank/cc Information for the connected bank using accessToken
+      const itemResponse = await client.itemGet({
+        access_token: exchange.data.access_token,
+      });
+
+      //instituio ID for the Item/Bank from Item response
+      const institutionId = itemResponse?.data?.item?.institution_id || '';
+
+      // Fetch institution information by ID
+      const instResponse = await client.institutionsGetById({
+        institution_id: institutionId,
+        country_codes: [CountryCode.Us],
+      });
+
+      //store bank details into the DB
       const [connectedBank] = await db
         .insert(connectedBanks)
         .values({
           id: createId(),
           userId: auth.userId,
           accessToken: exchange.data.access_token,
+          name: instResponse.data.institution.name,
         })
         .returning();
 
@@ -158,7 +171,8 @@ const app = new Hono()
             name: account.name,
             plaidId: account.account_id,
             userId: auth.userId,
-            accessToken: connectedBank.access_token,
+            bankId: connectedBank.id,
+            accessToken: connectedBank.accessToken,
           }))
         )
         .returning();
@@ -208,7 +222,7 @@ const app = new Hono()
         await db.insert(transactions).values(newTransactionsValues);
       }
 
-      return c.json({ ok: true });
+      return c.json({ ok: true }, 200);
     }
   );
 

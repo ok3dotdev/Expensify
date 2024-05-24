@@ -48,7 +48,10 @@ export const SettingsCard = () => {
                 ? 'Bank account connected'
                 : 'No bank account connected'}
             </div>
-            {connectedBank ? <PlaidDisconnect /> : <PlaidConnect />}
+            <div>
+              <PlaidConnect />
+              {/* {connectedBank && <PlaidDisconnect />} */}
+            </div>
           </div>
         </div>
         <Separator />

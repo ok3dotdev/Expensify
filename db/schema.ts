@@ -3,11 +3,28 @@ import { relations } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
 import { integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 
+export const connectedBanks = pgTable('connected_banks', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull(),
+  accessToken: text('access_token').notNull(),
+  name: text('name'),
+});
+
+export const connectedBanksRelations = relations(
+  connectedBanks,
+  ({ many }) => ({
+    accounts: many(accounts),
+  })
+);
+
 export const accounts = pgTable('accounts', {
   id: text('id').primaryKey(),
   plaidId: text('plaid_id'),
   name: text('name').notNull(),
   userId: text('user_id').notNull(),
+  bankId: text('bank_id').references(() => connectedBanks.id, {
+    onDelete: 'cascade',
+  }),
 });
 
 export const accountsRelations = relations(accounts, ({ many }) => ({
@@ -57,12 +74,6 @@ export const categoriesRelations = relations(categories, ({ many }) => ({
 }));
 
 export const insertCategorySchema = createInsertSchema(categories);
-
-export const connectedBanks = pgTable('connected_banks', {
-  id: text('id').primaryKey(),
-  userId: text('user_id').notNull(),
-  accessToken: text('access_token').notNull(),
-});
 
 export const subscriptions = pgTable('subscriptions', {
   id: text('id').primaryKey(),

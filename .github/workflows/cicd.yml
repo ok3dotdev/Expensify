@@ -1,0 +1,49 @@
+name: Expensify Deploy
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  build:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        node-version: [20.11.0]
+    steps:
+      - name: checkout source
+        uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Create .env file
+        run: |
+          echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}" >> .env
+          echo "CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }}" >> .env
+          echo "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" >> .env
+          echo "NEXT_PUBLIC_CLERK_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }}" >> .env
+          echo "NEXT_PUBLIC_CLERK_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }}" >> .env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          echo "NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}" >> .env
+          echo "PLAID_CLIENT_TOKEN=${{ secrets.PLAID_CLIENT_TOKEN }}" >> .env
+          echo "PLAID_SECRET_TOKEN=${{ secrets.PLAID_SECRET_TOKEN }}" >> .env
+          echo "LEMONSQUEEZY_STORE_ID=${{ secrets.LEMONSQUEEZY_STORE_ID }}" >> .env
+          echo "LEMONSQUEEZY_PRODUCT_ID=${{ secrets.LEMONSQUEEZY_PRODUCT_ID }}" >> .env
+          echo "LEMONSQUEEZY_API_KEY=${{ secrets.LEMONSQUEEZY_API_KEY }}" >> .env
+          echo "LEMONSQUEEZY_WEBHOOK_SECRET=${{ secrets.LEMONSQUEEZY_WEBHOOK_SECRET }}" >> .env
+      - name: Build docker image
+        run: docker build -t expensify .
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        node-version: [20.11.0]
+    steps:
+      - name: Delete old container
+        run: |
+          docker rm -f expensify-container || true
+      - name: Run docker container
+        run: docker run -d -p 3005:3005 --name expensify-container expensify

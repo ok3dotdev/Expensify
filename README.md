@@ -1,53 +1,70 @@
-## New feature
+# Expensify Multiple Banks
 
-Ability to add mulitiple bank accounts
+This documentation provides instructions on adding multiple banks and tracking transactions in Expensify.
 
-# schema
+![Example Image](images/screenshot.png)
 
-# Flow
+## Steps
 
-user connect bank / new bank and get access token ->
-store new bank in the db amd access code in db ->
-fetch and store new accounts and access_codes in db - >
+1. **Create a New Branch for Development**
+   - Create a branch named `multi-banks`.
 
-<!--
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+2. **Set Up the Database**
+   - Create a new database named `multi-banks` on Neon using Drizzle ORM.
+   - Run `npm run db:generate`.
+   - Run `npm run db:migrate` to apply changes to the new database.
 
+3. **Schema Changes**
+   - Modify the schema to establish a one-to-many relationship between banks and accounts.
 
+4. **Connecting a Bank**
+   - When a bank is connected, add the bank and other relevant values to the database.
 
+5. **Add New Routes for Banks**
+   - Update `routes.ts` with Hono.js to include the following routes:
+     - Get all banks
+     - Get bank by ID
+     - Delete all banks
+     - Delete a single bank along with its accounts and transactions
 
-## Getting Started
+6. **Create a Client Page for Banks**
+   - Under the `app/dashboard` directory, create a 'use client' page for banks.
+   - Use a hook to fetch banks data with Hono.
 
-First, run the development server:
+## Connect Bank Flow
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. User clicks "Connect Bank" or "Add New Bank".
+2. User selects a bank and accounts, then obtains access tokens.
+3. Server adds new bank details to the database.
+4. Server fetches accounts, categories, and transactions for user selection and saves them to the database.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How to Start the App
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Create `.env.local` File**
+   - Populate it with the following details:
+     ```
+     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+     CLERK_PUBLISHABLE_KEY=
+     CLERK_SECRET_KEY=
+     NEXT_PUBLIC_CLERK_SIGN_IN_URL=
+     NEXT_PUBLIC_CLERK_SIGN_UP_URL=
+     DATABASE_URL=
+     NEXT_PUBLIC_APP_URL=
+     PLAID_CLIENT_TOKEN=
+     PLAID_SECRET_TOKEN=
+     LEMONSQUEEZY_STORE_ID=
+     LEMONSQUEEZY_PRODUCT_ID=
+     LEMONSQUEEZY_API_KEY=
+     LEMONSQUEEZY_WEBHOOK_SECRET=
+     ```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+2. **Run Database Scripts**
+   - Run `npm run db:generate`.
+   - Run `npm run db:migrate`.
+   - Run `npm run db:studio`.
 
-## Learn More
+3. **Run the App**
+   - Execute `npm run dev`.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details. -->
+4. **Access the App**
+   - Open your browser and visit `localhost:3000`.

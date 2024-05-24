@@ -10,9 +10,13 @@ import { useExchangePublicToken } from '@/features/plaid/api/use-exchange-public
 import { usePaywall } from '@/features/subscriptions/hooks/use-paywall';
 
 import { Button } from '@/components/ui/button';
+import { useGetBanks } from '@/features/banks/api/use-get-banks';
 
 export const PlaidConnect = () => {
   const [token, setToken] = useState<string | null>(null);
+  const banksQuery = useGetBanks();
+
+  const banks = banksQuery.data || [];
 
   const { shouldBlock, triggerPaywall, isLoading } = usePaywall();
 
@@ -22,7 +26,7 @@ export const PlaidConnect = () => {
   useMount(() => {
     createLinkTokenMutation.mutate(undefined, {
       onSuccess: ({ data }) => {
-        setToken(data.link_token);
+        setToken(data);
       },
     });
   });
@@ -38,10 +42,10 @@ export const PlaidConnect = () => {
   });
 
   const onClick = () => {
-    if (shouldBlock) {
-      triggerPaywall();
-      return;
-    }
+    // if (shouldBlock) {
+    //   triggerPaywall();
+    //   return;
+    // }
 
     if (plaid.ready) {
       plaid.open();
@@ -49,11 +53,14 @@ export const PlaidConnect = () => {
   };
 
   const isDisabled =
-    !plaid.ready || exchangePublicTokenMutation.isPending || isLoading;
+    !plaid.ready ||
+    exchangePublicTokenMutation.isPending ||
+    isLoading ||
+    banksQuery.isLoading;
 
   return (
     <Button onClick={onClick} disabled={isDisabled} variant='ghost' size='sm'>
-      Connect
+      {banks.length ? 'Add New Bank' : 'Connect Bank'}
     </Button>
   );
 };
