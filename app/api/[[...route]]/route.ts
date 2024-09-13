@@ -9,6 +9,7 @@ import accounts from './accounts';
 import categories from './categories';
 import transactions from './transactions';
 import subscriptions from './subscriptions';
+import webhooks from './transactionsWebhook';
 
 export const runtime = 'nodejs';
 
@@ -30,7 +31,8 @@ const routes = app
   .route('/accounts', accounts)
   .route('/categories', categories)
   .route('/transactions', transactions)
-  .route('/subscriptions', subscriptions);
+  .route('/subscriptions', subscriptions)
+  .route('/webhooks', webhooks);
 
 export const GET = handle(app);
 export const POST = handle(app);

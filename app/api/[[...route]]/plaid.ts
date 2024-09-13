@@ -98,6 +98,8 @@ const app = new Hono()
       },
       client_name: 'expensify',
       products: [Products.Transactions],
+      webhook:
+        'https://8bf9-99-237-104-83.ngrok-free.app/api/webhooks/transactions',
       country_codes: [CountryCode.Us],
       language: 'en',
     });
